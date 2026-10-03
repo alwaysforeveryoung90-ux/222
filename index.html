@@ -13,30 +13,27 @@
     background-attachment: fixed;
     font-family: 'Segoe UI', Tahoma, sans-serif;
     color: #e0c8ff;
-    padding: 50px 25px;
+    padding: 60px 40px;
     display: flex;
     justify-content: center;
     overflow-x: hidden;
   }
 
-  .text {
-    max-width: 800px;
+  .columns {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 60px;
+    max-width: 1000px;
     width: 100%;
-    font-size: 1.05rem;
-    line-height: 1.9;
+  }
+
+  .column {
+    font-size: 1rem;
+    line-height: 2;
     color: #d8b4fe;
-    text-align: left;
+    text-align: justify;
     word-wrap: break-word;
     text-shadow: 0 0 8px rgba(168, 85, 247, 0.35);
-  }
-
-  .text span {
-    opacity: 0;
-    animation: fadeIn 0.6s forwards;
-  }
-
-  @keyframes fadeIn {
-    to { opacity: 1; }
   }
 
   .glow {
@@ -49,6 +46,15 @@
     pointer-events: none;
     z-index: -1;
   }
+
+  /* мобильная версия — один столбец */
+  @media (max-width: 700px) {
+    .columns {
+      grid-template-columns: 1fr;
+      gap: 0;
+    }
+    body { padding: 40px 20px; }
+  }
 </style>
 </head>
 <body>
@@ -56,7 +62,10 @@
   <div class="glow" style="top: -100px; left: -100px;"></div>
   <div class="glow" style="bottom: -120px; right: -100px;"></div>
 
-  <div class="text" id="text"></div>
+  <div class="columns">
+    <div class="column" id="col1"></div>
+    <div class="column" id="col2"></div>
+  </div>
 
 <script>
   const phrases = [
@@ -67,23 +76,19 @@
     "ценюю"
   ];
 
-  const textEl = document.getElementById('text');
-
-  // 500 фраз подряд, разделённых запятыми, всё с маленькой буквы
-  let fullText = "";
+  // Собираем 500 фраз в один текст
+  let parts = [];
   for (let i = 0; i < 500; i++) {
-    fullText += phrases[i % phrases.length];
-    if (i < 499) fullText += ", ";
+    parts.push(phrases[i % phrases.length]);
   }
 
-  // Разбиваем по символам для плавного появления
-  const chars = fullText.split("");
-  chars.forEach((ch, i) => {
-    const span = document.createElement('span');
-    span.textContent = ch;
-    span.style.animationDelay = (i * 0.003) + "s";
-    textEl.appendChild(span);
-  });
+  // Делим ровно пополам между двумя колонками
+  const half = Math.ceil(parts.length / 2);
+  const col1Text = parts.slice(0, half).join(", ") + ",";
+  const col2Text = parts.slice(half).join(", ") + ",";
+
+  document.getElementById("col1").textContent = col1Text;
+  document.getElementById("col2").textContent = col2Text;
 </script>
 
 </body>
